@@ -17,12 +17,12 @@ Chung-Ang University
 
 ALTSTEER is an inference-time safety steering method. It shifts responses to harmful requests from short refusals toward constructive safe alternatives, within a single inference pass and without training.
 
-It first measures refusal alignment: the cosine similarity between the prompt's last-token hidden states and the refusal vector, averaged over all layers. If the average is above 0, it adds two vectors at a target layer while the response is generated. At decoding step `t` of `T`:
+It first measures refusal alignment: the cosine similarity between the prompt's last-token hidden states and the refusal vector, averaged over all layers. If the average is above 0, it applies staged steering during decoding, which shifts generation from refusal-oriented control toward constructive alternatives:
 
-- **Refusal vector**: its strength is `r * (1 - sqrt(t / T))`, which falls from `r` to 0.
-- **Alternative vector**: its strength is `e + (1 - e) * sqrt(t / T)`, which moves from `e` to 1. With the included Llama setting of `e = 1.0`, it stays at 1.0. The code and file names call this the explanation vector.
+- **Refusal vector**: provides an initial refusal anchor.
+- **Alternative vector**: encourages constructive continuation. The code and file names call this the explanation vector.
 
-This repository includes vectors and settings for Llama-3.1-8B-Instruct: layer 13, `r = 1.5` and `e = 1.0`. See [Adding a Model](#-adding-a-model) to use another model.
+This repository includes vectors and settings for Llama-3.1-8B-Instruct: steering at layer 13, with initial strengths of 1.5 for the refusal vector and 1.0 for the alternative vector. See [Adding a Model](#-adding-a-model) to use another model.
 
 ## 🔧 Requirements
 
