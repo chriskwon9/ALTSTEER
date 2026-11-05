@@ -80,7 +80,7 @@ bash scripts/evaluate.sh llama31-8b-instruct
 
 Results are saved to `results/llama31-8b-instruct/`. If the script stops, run it again to continue from the finished results.
 
-The script calls the GPT-4o API once per evaluated response, so it costs money. The harmful leakage evaluation scores every row of each result file, including the benign benchmarks in `altsteer.json`.
+
 
 | Step | Script | What it does |
 |---|---|---|
