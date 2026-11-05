@@ -1,24 +1,28 @@
 <div align="center">
 <h1> ALTSTEER: Selective Safety Steering for Moving Beyond Hard Refusals to Constructive Alternatives </h1>
 
-<!-- TODO: add the full paper title to the heading above and a venue badge below. -->
+Hoejoon Kwon, Byeonggeuk Lim, Kahyeon Kim, YoungBin Kim
 
+Chung-Ang University
+
+[![EMNLP 2026](https://img.shields.io/badge/EMNLP-2026-green.svg)](https://aclanthology.org/2026.emnlp-main.839/)
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.9.1-red.svg)](https://pytorch.org/)
 
-
-<!-- TODO: add the paper link. -->
+[Paper](https://aclanthology.org/2026.emnlp-main.839/)
 
 </div>
 
 ---
 
-AltSteer is a conditional activation steering method. It first checks whether a prompt is harmful, using the cosine similarity between the prompt's last-token hidden states and the refusal vector, averaged over all layers. If the average is above 0, it adds two vectors at a target layer while the response is generated:
+ALTSTEER is an inference-time safety steering method. It shifts responses to harmful requests from short refusals toward constructive safe alternatives, within a single inference pass and without training.
 
-- **Refusal vector**: its strength falls toward 0.
-- **Explanation vector**: its strength rises toward 1.
+It first measures refusal alignment: the cosine similarity between the prompt's last-token hidden states and the refusal vector, averaged over all layers. If the average is above 0, it adds two vectors at a target layer while the response is generated. At decoding step `t` of `T`:
 
-This repository includes vectors and settings for Llama-3.1-8B-Instruct. See [Adding a Model](#-adding-a-model) to use another model.
+- **Refusal vector**: its strength is `r * (1 - sqrt(t / T))`, which falls from `r` to 0.
+- **Alternative vector**: its strength is `e + (1 - e) * sqrt(t / T)`, which moves from `e` to 1. With the included Llama setting of `e = 1.0`, it stays at 1.0. The code and file names call this the explanation vector.
+
+This repository includes vectors and settings for Llama-3.1-8B-Instruct: layer 13, `r = 1.5` and `e = 1.0`. See [Adding a Model](#-adding-a-model) to use another model.
 
 ## 🔧 Requirements
 
@@ -29,7 +33,7 @@ This repository includes vectors and settings for Llama-3.1-8B-Instruct. See [Ad
 ### Installation
 
 ```bash
-git clone https://github.com/<your-username>/AltSteer
+git clone https://github.com/chriskwon9/ALTSTEER
 cd ALTSTEER
 pip install -e .
 ```
@@ -67,7 +71,6 @@ To extract them yourself:
 bash scripts/extract_vectors.sh llama31-8b-instruct
 ```
 
-
 ### 3. Evaluation
 
 One script generates responses on every benchmark and scores them:
@@ -78,8 +81,6 @@ bash scripts/evaluate.sh llama31-8b-instruct
 ```
 
 Results are saved to `results/llama31-8b-instruct/`. If the script stops, run it again to continue from the finished results.
-
-
 
 | Step | Script | What it does |
 |---|---|---|
@@ -92,7 +93,6 @@ Results are saved to `results/llama31-8b-instruct/`. If the script stops, run it
 | 7 | `altsteer/eval/eval_xstest_compliance_gpt4o.py` | Compliance on XSTest safe prompts |
 | 8 | `altsteer/eval/eval_harmful_leakage_gpt4o.py`, `eval_naive_all.py` | Harmful information in responses, and all scores for the no-steering results |
 | 9 | `altsteer/src/generate_alpacaeval.py` | AlpacaEval, skipped unless you run `pip install alpaca-eval` |
-
 
 ## 🧩 Adding a Model
 
@@ -136,11 +136,29 @@ This repository only includes the BeaverTails prompts and refusal labels used to
 
 Our BeaverTails test sample is identified by its row numbers in `data/beavertails_test_indices.json`.
 
-
 ## 📚 Citation
 
-<!-- TODO: add the BibTeX entry. -->
+```bibtex
+@inproceedings{kwon-etal-2026-altsteer,
+    title = "{ALTSTEER}: Selective Safety Steering for Moving Beyond Hard Refusals to Constructive Alternatives",
+    author = "Kwon, Hoejoon  and
+      Lim, Byeonggeuk  and
+      Kim, Kahyeon  and
+      Kim, YoungBin",
+    editor = "Lee, Hung-Yi  and
+      Dev, Sunipa  and
+      Li, Junyi Jessy  and
+      Elliott, Desmond",
+    booktitle = "Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing",
+    month = oct,
+    year = "2026",
+    address = "Budapest, Hungary",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2026.emnlp-main.839/",
+    doi = "10.18653/2026.emnlp-main.839",
+    pages = "19455--19473",
+    ISBN = "979-8-89176-459-0"
+}
+```
 
-## License
 
-The code is released under the [Apache License 2.0](LICENSE). The benchmark data and the Llama model remain subject to their own licenses.
