@@ -68,9 +68,6 @@ To extract them yourself:
 bash scripts/extract_vectors.sh llama31-8b-instruct
 ```
 
-This writes to `results/llama31-8b-instruct/vector_extraction/vectors/` and does not overwrite the provided vectors. In our test run, the regenerated Llama vectors had a cosine similarity above 0.99999 with the provided vectors in every layer. They are not bit-for-bit identical.
-
-The refusal and explanation vectors are computed within each of the 14 BeaverTails harm categories and then averaged. Categories only set this weighting. They are not used at inference time.
 
 ### 3. Evaluation
 
