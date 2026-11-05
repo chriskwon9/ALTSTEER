@@ -94,7 +94,6 @@ Results are saved to `results/llama31-8b-instruct/`. If the script stops, run it
 | 8 | `altsteer/eval/eval_harmful_leakage_gpt4o.py`, `eval_naive_all.py` | Harmful information in responses, and all scores for the no-steering results |
 | 9 | `altsteer/src/generate_alpacaeval.py` | AlpacaEval, skipped unless you run `pip install alpaca-eval` |
 
-Small numerical differences across environments can change generated responses, so results may not match ours exactly.
 
 ## 🧩 Adding a Model
 
@@ -138,7 +137,6 @@ This repository only includes the BeaverTails prompts and refusal labels used to
 
 Our BeaverTails test sample is identified by its row numbers in `data/beavertails_test_indices.json`.
 
-Some of these prompts are harmful by design. Use them for safety research only.
 
 ## 📚 Citation
 
