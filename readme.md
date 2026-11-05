@@ -31,7 +31,7 @@ This repository includes vectors and settings for Llama-3.1-8B-Instruct. See [Ad
 
 ```bash
 git clone https://github.com/<your-username>/AltSteer
-cd AltSteer
+cd ALTSTEER
 pip install -e .
 ```
 
