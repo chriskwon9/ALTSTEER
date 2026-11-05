@@ -1,5 +1,5 @@
 <div align="center">
-<h1> AltSteer </h1>
+<h1> ALTSTEER: Selective Safety Steering for Moving Beyond Hard Refusals to Constructive Alternatives </h1>
 
 <!-- TODO: add the full paper title to the heading above and a venue badge below. -->
 
