@@ -6,7 +6,6 @@
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.9.1-red.svg)](https://pytorch.org/)
 
-**The official implementation of AltSteer**
 
 <!-- TODO: add the paper link. -->
 
