@@ -158,6 +158,8 @@ Our BeaverTails test sample is identified by its row numbers in `data/beavertail
 
 ## 📚 Citation
 
+If you find this repo or the paper useful, please kindly cite:
+
 ```bibtex
 @inproceedings{kwon-etal-2026-altsteer,
     title = "{ALTSTEER}: Selective Safety Steering for Moving Beyond Hard Refusals to Constructive Alternatives",
