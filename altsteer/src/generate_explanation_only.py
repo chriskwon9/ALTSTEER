@@ -4,7 +4,7 @@ Prefill: Detect harmfulness via cosine similarity (all layers avg) with FNTP mea
   - If avg cosine sim <= 0: No steering (naive model inference)
 
 Steering (generation only, target layer):
-    Explanation: α_exp,t = EXPLANATION_STRENGTH_START + (1 - EXPLANATION_STRENGTH_START) × sqrt(t / max_tokens)
+    Explanation: α_exp,t = EXPLANATION_STRENGTH_START × (1 + sqrt(t / max_tokens))
     Refusal: DISABLED
 
 Datasets: advbench, jailbreakbench, malicious_instruct, beavertails
@@ -183,7 +183,7 @@ class ExplanationOnlyHook:
                 
                 # Apply explanation (increasing with sqrt, starting at EXPLANATION_STRENGTH_START)
                 if self.explanation_vector is not None:
-                    explanation_strength_current = EXPLANATION_STRENGTH_START + (1.0 - EXPLANATION_STRENGTH_START) * sqrt_ratio
+                    explanation_strength_current = EXPLANATION_STRENGTH_START * (1.0 + sqrt_ratio)
                     explain_vec = self.explanation_vector[self.layer_idx].to(device, dtype=dtype)
                     hidden_states = hidden_states + explanation_strength_current * explain_vec.unsqueeze(0).unsqueeze(0)
                 
@@ -285,7 +285,7 @@ def generate_response(prompt, max_new_tokens=512):
         num_generated = hook_manager.generated_token_count
         for t in range(num_generated):
             sqrt_ratio = (t / max_new_tokens) ** 0.5
-            explanation_strengths.append(EXPLANATION_STRENGTH_START + (1.0 - EXPLANATION_STRENGTH_START) * sqrt_ratio)
+            explanation_strengths.append(EXPLANATION_STRENGTH_START * (1.0 + sqrt_ratio))
         hook_manager.remove()
     
     # Decode only generated tokens
@@ -300,7 +300,7 @@ print(f"Target layer: {TARGET_LAYER}")
 print(f"Detection: avg cosine sim (all layers) with FNTP mean vector")
 print(f"  > 0: Apply explanation-only steering during generation")
 print(f"  <= 0: No steering (naive inference)")
-print(f"Explanation (generation): {EXPLANATION_STRENGTH_START} + {1.0 - EXPLANATION_STRENGTH_START} × sqrt(t/max_tokens)")
+print(f"Explanation (generation): {EXPLANATION_STRENGTH_START} × (1 + sqrt(t/max_tokens))")
 print(f"Refusal: DISABLED")
 
 save_interval = 10
@@ -342,7 +342,7 @@ for idx, (i, sample) in enumerate(tqdm(remaining_data, desc="Processing remainin
             'avg_cosine_sim': avg_cosine_sim,
             'steering_applied': steering_applied,
             'refusal_strength_range': 'DISABLED',
-            'explanation_strength_range': f"{EXPLANATION_STRENGTH_START} → 1.0 (sqrt)" if steering_applied else "N/A (no steering)",
+            'explanation_strength_range': f"{EXPLANATION_STRENGTH_START} → {2 * EXPLANATION_STRENGTH_START} (sqrt)" if steering_applied else "N/A (no steering)",
             'vector_type': 'averaged_explain_only' if steering_applied else 'none',
             'num_generated_tokens': len(explanation_strengths) if explanation_strengths else len(response.split()),
             'refusal_strengths': [],
@@ -394,5 +394,5 @@ print(f"  • Output file: {output_path}")
 print(f"\nSteering configuration:")
 print(f"  Detection: avg cosine sim (all 32 layers) > 0 → steering ON")
 print(f"  Refusal: DISABLED")
-print(f"  Explanation (generation): {EXPLANATION_STRENGTH_START} + {1.0 - EXPLANATION_STRENGTH_START} × sqrt(t/max_tokens)")
+print(f"  Explanation (generation): {EXPLANATION_STRENGTH_START} × (1 + sqrt(t/max_tokens))")
 print(f"  Steering layer: {TARGET_LAYER}")

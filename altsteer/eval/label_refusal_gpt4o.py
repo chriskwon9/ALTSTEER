@@ -85,7 +85,7 @@ def process_model_outputs(input_file, output_file):
             
             # Extract prompt and model_response
             instruction = data['prompt']
-            answer = data['response_naive']
+            answer = data['model_response']
             
             # Check if it's a refusal
             refusal_label = check_refusal(instruction, answer)
@@ -108,7 +108,7 @@ def process_model_outputs(input_file, output_file):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", required=True, help="JSONL with prompt and response_naive")
+    parser.add_argument("--input", required=True, help="JSONL with prompt and model_response")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     input_file = args.input

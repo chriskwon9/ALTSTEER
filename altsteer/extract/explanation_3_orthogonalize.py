@@ -49,7 +49,7 @@ for layer_num in LAYERS:
     for category, vec in refusal_vectors_full.items():
         refusal_vectors[category] = vec[layer_num]  # Extract layer
     
-    # Find common categories
+    # Find the groups in both files
     explanation_cats = set(explanation_vectors.keys())
     refusal_cats = set(refusal_vectors.keys())
     common_cats = explanation_cats & refusal_cats

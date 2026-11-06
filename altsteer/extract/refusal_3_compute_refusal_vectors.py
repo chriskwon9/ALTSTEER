@@ -14,7 +14,7 @@ complied_vectors = torch.load(args.complied)
 print("Refused categories:", list(refused_vectors.keys()))
 print("Complied categories:", list(complied_vectors.keys()))
 
-# Find common categories
+# Find the groups in both files
 refused_cats = set(refused_vectors.keys())
 complied_cats = set(complied_vectors.keys())
 common_cats = refused_cats & complied_cats

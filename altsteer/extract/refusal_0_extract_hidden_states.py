@@ -29,6 +29,17 @@ with open(args.metadata, "r") as f:
     metadata = [json.loads(line) for line in f if line.strip()]
 print(f"Loaded {len(metadata)} prompts")
 
+# Stop here if the labels are incomplete: every label other than "Yes" would count as complied.
+invalid_rows = [
+    i for i, sample in enumerate(metadata)
+    if "category" not in sample or sample.get("explicit_refusal") not in ("Yes", "No")
+]
+if invalid_rows:
+    raise SystemExit(
+        f"Error: {len(invalid_rows)} rows in {args.metadata} need a category and an "
+        f"explicit_refusal of Yes or No. First invalid row: {invalid_rows[0]}."
+    )
+
 all_hidden_states = []
 for sample in tqdm(metadata, desc="Extracting hidden states"):
     messages = [{"role": "user", "content": sample["prompt"]}]

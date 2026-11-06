@@ -51,7 +51,7 @@ python "${SRC}/refusal_1_split_hidden_states.py" \
     --refused_output "${HIDDEN_DIR}/refusal_hidden_states_refused.pt" \
     --complied_output "${HIDDEN_DIR}/refusal_hidden_states_complied.pt"
 
-echo "[3/8] Computing group means"
+echo "[3/8] Computing means"
 python "${SRC}/refusal_2_compute_category_means.py" \
     --input "${HIDDEN_DIR}/refusal_hidden_states_refused.pt" \
     --output "${INTERMEDIATE_DIR}/means_refused.pt"

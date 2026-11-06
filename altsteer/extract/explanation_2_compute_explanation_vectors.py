@@ -4,7 +4,7 @@ Explanation vector computation from system prompts
 Input: a hidden state file
 - hidden states under the explained_refusal system prompt
 - hidden states under the simple_refusal system prompt
-- vectors are computed per category for every extracted layer
+- vectors are computed for every extracted layer
 """
 
 import argparse
@@ -24,24 +24,17 @@ OUTPUT_FILE = args.output
 
 def create_explanation_vectors_per_category(data):
     """
-    Compute explanation vectors per category
-    
-    For each category:
-        explained_refusal mean - simple_refusal mean
+    Compute explanation vectors: explained_refusal mean - simple_refusal mean
     
     Returns:
-        dict: {
-            'layer_<n>': {category: vector, ...},
-            'layer_14': {category: vector, ...},
-            ...
-        }
+        dict from layer name to its vectors
     """
     print()
     print("=" * 80)
     print("Creating Category-specific Explanation Vectors (All extracted layers)")
     print("=" * 80)
     
-    # Organize by category and layer
+    # Organize by layer
     layer_vectors = {}
     
     for layer_num in LAYERS:
@@ -52,7 +45,7 @@ def create_explanation_vectors_per_category(data):
         category_explained = defaultdict(list)
         category_simple = defaultdict(list)
         
-        # Collect vectors by category
+        # Collect vectors
         for sample in data:
             category = sample['category']
             h_explained = sample['h_post_explained_refusal'][f'layer_{layer_num}']
@@ -61,7 +54,7 @@ def create_explanation_vectors_per_category(data):
             category_explained[category].append(h_explained)
             category_simple[category].append(h_simple)
         
-        # Compute vectors for each category
+        # Compute vectors
         category_vecs = {}
         
         for category in sorted(category_explained.keys()):
@@ -102,7 +95,7 @@ def main():
     LAYERS = [int(key.split('_')[1]) for key in data[0]['h_post_explained_refusal']]
     print()
     
-    # Count categories
+    # Count samples
     from collections import Counter
     categories = [sample['category'] for sample in data]
     category_counts = Counter(categories)
@@ -112,7 +105,7 @@ def main():
         print(f"  {cat}: {count}")
     print()
     
-    # Create category-specific vectors for all layers
+    # Create vectors for all layers
     layer_vectors = create_explanation_vectors_per_category(data)
     
     # Save vectors

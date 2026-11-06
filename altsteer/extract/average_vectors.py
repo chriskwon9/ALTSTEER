@@ -1,4 +1,4 @@
-"""Average the per-group refusal and explanation vectors into the final vectors."""
+"""Average the refusal and explanation vectors into the final vectors."""
 
 import argparse
 

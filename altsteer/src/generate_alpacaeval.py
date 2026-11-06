@@ -63,7 +63,7 @@ class PrefillRefusalDecodeExplanationHook:
                     hidden_states = hidden_states + strength * vec.unsqueeze(0).unsqueeze(0)
 
                 if self.explanation_vector is not None:
-                    strength = self.explanation_strength_start + (1.0 - self.explanation_strength_start) * sqrt_ratio
+                    strength = self.explanation_strength_start * (1.0 + sqrt_ratio)
                     vec = self.explanation_vector[self.layer_idx].to(device, dtype=dtype)
                     hidden_states = hidden_states + strength * vec.unsqueeze(0).unsqueeze(0)
 
@@ -252,7 +252,7 @@ def main():
         print(f"\n  ✓ AltSteer dynamic steering is set")
         print(f"    classifier       : cosine sim > {CLASSIFIER_THRESHOLD} → harmful → steering ON")
         print(f"    refusal strength : {REFUSAL_STRENGTH_START} (falls with sqrt during generation)")
-        print(f"    explain strength : {EXPLANATION_STRENGTH_START} → 1.0 (rises with sqrt during generation)")
+        print(f"    explain strength : {EXPLANATION_STRENGTH_START} → {2 * EXPLANATION_STRENGTH_START} (rises with sqrt during generation)")
         print(f"    target layer     : {TARGET_LAYER}")
     else:
         print("  ✓ Steering disabled")

@@ -15,7 +15,7 @@ data = torch.load(args.input)
 
 print(f"Total samples: {len(data)}")
 
-# Group samples by category
+# Group samples
 category_samples = defaultdict(list)
 
 for sample in data:
@@ -28,7 +28,7 @@ print("\nSamples per category:")
 for category, samples in sorted(category_samples.items()):
     print(f"  {category}: {len(samples)} samples")
 
-# Compute layer-wise mean for each category
+# Compute layer-wise means
 category_mean_vectors = {}
 
 for category, samples in category_samples.items():

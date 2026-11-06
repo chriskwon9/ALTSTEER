@@ -31,7 +31,7 @@ complied_samples = []
 
 print("\nSplitting samples by explicit_refusal status...")
 for i, (meta, hidden) in enumerate(zip(metadata, hidden_states)):
-    # Add original index and category to the hidden state dictionary
+    # Add the original index and metadata to the hidden state dictionary
     sample_with_index = {
         'original_index': i,
         'category': meta['category'],
