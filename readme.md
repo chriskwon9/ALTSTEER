@@ -175,6 +175,4 @@ Our BeaverTails test sample is identified by its row numbers in `data/beavertail
 }
 ```
 
-## License
 
-The code is released under the [Apache License 2.0](LICENSE). The benchmark data and the Llama model remain subject to their own licenses.
