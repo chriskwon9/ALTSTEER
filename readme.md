@@ -140,7 +140,11 @@ The model must be a causal language model whose layers are at `model.model.layer
 
 ## 📊 Data
 
-This repository only includes the BeaverTails prompts and refusal labels used to extract the vectors, in `data/anchors/`. `scripts/download_data.sh` downloads the benchmarks from their sources:
+This repository only includes the BeaverTails prompts and refusal labels used to extract the vectors, in `data/anchors/`.
+
+The vectors are built from 2,668 rows (2,116 unique prompts) sampled from the unsafe rows of BeaverTails `330k_train`, in `data/anchors/llama31-8b-instruct/beavertails_train_metadata.jsonl`. `explicit_refusal` records whether Llama-3.1-8B-Instruct refused each prompt (1,709 refused, 959 complied). The refusal vector uses both groups, and the alternative vector uses only the refused prompts.
+
+`scripts/download_data.sh` downloads the benchmarks from their sources:
 
 | Benchmark | Source | Prompts used |
 |---|---|---|
