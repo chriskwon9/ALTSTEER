@@ -1,7 +1,7 @@
 <div align="center">
 <h1> ALTSTEER: Selective Safety Steering for Moving Beyond Hard Refusals to Constructive Alternatives </h1>
 
-Hoejoon Kwon, Byeonggeuk Lim, Kahyeon Kim, YoungBin Kim
+### Hoejoon Kwon, Byeonggeuk Lim, Kahyeon Kim, YoungBin Kim
 
 [![EMNLP 2026](https://img.shields.io/badge/EMNLP-2026-green.svg)](https://aclanthology.org/2026.emnlp-main.839/)
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
