@@ -1,7 +1,7 @@
 <div align="center">
 <h1> ALTSTEER: Selective Safety Steering for Moving Beyond Hard Refusals to Constructive Alternatives </h1>
 
-<img src="assets/overview.png" alt="Overview of ALTSTEER" width="800">
+Hoejoon Kwon, Byeonggeuk Lim, Kahyeon Kim, YoungBin Kim
 
 [![EMNLP 2026](https://img.shields.io/badge/EMNLP-2026-green.svg)](https://aclanthology.org/2026.emnlp-main.839/)
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
@@ -19,6 +19,10 @@ It first measures refusal alignment: the cosine similarity between the prompt's 
 
 - **Refusal vector**: provides an initial refusal anchor.
 - **Alternative vector**: encourages constructive continuation. The code and file names call this the explanation vector.
+
+<p align="center">
+  <img src="assets/overview.png" alt="Overview of ALTSTEER" width="800">
+</p>
 
 This repository includes vectors and settings for Llama-3.1-8B-Instruct: steering at layer 13, with initial strengths of 1.5 for the refusal vector and 1.0 for the alternative vector. See [Adding a Model](#-adding-a-model) to use another model.
 
@@ -89,8 +93,9 @@ Results are saved to `results/llama31-8b-instruct/`. If the script stops, run it
 | 5 | `altsteer/eval/eval_math_accuracy.py` | Accuracy on GSM8K and MATH-500, with no API calls |
 | 6 | `altsteer/eval/eval_refusal_alternative_gpt4o.py` | Refusal and constructive alternatives |
 | 7 | `altsteer/eval/eval_xstest_compliance_gpt4o.py` | Compliance on XSTest safe prompts |
-| 8 | `altsteer/eval/eval_harmful_leakage_gpt4o.py`, `eval_naive_all.py` | Harmful information in responses, and all scores for the no-steering results |
-| 9 | `altsteer/src/generate_alpacaeval.py` | AlpacaEval, skipped unless you run `pip install alpaca-eval` |
+| 8 | `altsteer/eval/eval_harmful_leakage_gpt4o.py`, `eval_naive_all.py` | Harmful information in responses on the four safety benchmarks, and all scores for the no-steering results |
+| 9 | `altsteer/eval/eval_safe_alternative.py` | Leakage Rate and Safe Alt. for each method, with no API calls |
+| 10 | `altsteer/src/generate_alpacaeval.py` | AlpacaEval, skipped unless you run `pip install alpaca-eval` |
 
 ## 🧩 Adding a Model
 

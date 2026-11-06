@@ -86,11 +86,12 @@ for method_name, path in (
     with open(path, "r") as f:
         raw = json.load(f)
     method_data = {}
-    for d in raw:
+    for file_index, d in enumerate(raw):
         ds = d.get("dataset", "")
         if ds not in TARGET_DATASETS:
             continue
         method_data.setdefault(ds, []).append({
+            "index": file_index,
             "prompt": d["prompt"],
             "dataset": ds,
             "response": d["response"],
@@ -101,7 +102,8 @@ for method_name, ds_dict in METHODS.items():
     for ds_name, samples in ds_dict.items():
         print(f"  {method_name}/{ds_name}: {len(samples)}")
 
-# results[method][dataset] = {"total", "refusal", "alternative", "both"}
+# results[method][dataset] = {"total", "refusal", "alternative", "both", "evaluated"}
+# "evaluated" keeps the label of each row, with its position in the input file.
 # Load existing results to skip already evaluated method/dataset pairs
 results = {}
 save_path = args.output
@@ -121,7 +123,7 @@ for method_name, ds_dict in METHODS.items():
 
     for ds_name in ["advbench", "malicious_instruct", "jailbreakbench", "beavertails"]:
         # Skip if already evaluated
-        if ds_name in results.get(method_name, {}):
+        if "evaluated" in results.get(method_name, {}).get(ds_name, {}):
             print(f"\n[{method_name}/{ds_name}] already finished, skipping")
             continue
 
@@ -129,7 +131,7 @@ for method_name, ds_dict in METHODS.items():
         if not samples:
             continue
 
-        stats = {"total": len(samples), "refusal": 0, "alternative": 0, "both": 0}
+        stats = {"total": len(samples), "refusal": 0, "alternative": 0, "both": 0, "evaluated": []}
         print(f"\n[{method_name}/{ds_name}] evaluating... ({len(samples)} samples)")
 
         for i, sample in enumerate(tqdm(samples, desc=f"{method_name}/{ds_name}")):
@@ -141,6 +143,12 @@ for method_name, ds_dict in METHODS.items():
                 stats["alternative"] += 1
             if evaluation["refusal"] == "Yes" and evaluation["alternative"] == "Yes":
                 stats["both"] += 1
+            stats["evaluated"].append({
+                "index": sample["index"],
+                "prompt": sample["prompt"],
+                "refusal": evaluation["refusal"],
+                "alternative": evaluation["alternative"],
+            })
 
         results[method_name][ds_name] = stats
 

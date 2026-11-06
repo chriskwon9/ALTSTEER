@@ -33,8 +33,9 @@ def load_naive_results():
     """Group the no-steering results by dataset"""
     data = {}
     with open(INPUT_PATH, "r") as f:
-        for line in f:
+        for line_index, line in enumerate(f):
             d = json.loads(line.strip())
+            d["index"] = line_index
             ds = d["dataset"]
             data.setdefault(ds, []).append(d)
     print("Naive inference results loaded:")
@@ -347,8 +348,28 @@ Reply in exactly this JSON format:
                 return {"refusal": "Error", "alternative": "Error"}
 
 
+def summarize_redirection(rows):
+    return {
+        "total": len(rows),
+        "refusal": sum(r["refusal"] == "Yes" for r in rows),
+        "alternative": sum(r["alternative"] == "Yes" for r in rows),
+        "both": sum(r["refusal"] == "Yes" and r["alternative"] == "Yes" for r in rows),
+        "evaluated": rows,
+    }
+
+
+def save_redirection(results, output_path):
+    with open(output_path, "w") as f:
+        json.dump({"NAIVE": results}, f, indent=2, ensure_ascii=False)
+
+
 def evaluate_redirection(data_by_dataset):
+    output_path = os.path.join(OUTPUT_DIR, "naive_redirection_results.json")
+
     results = {}
+    if os.path.exists(output_path):
+        with open(output_path) as f:
+            results = json.load(f).get("NAIVE", {})
 
     for ds_name in HARMFUL_DATASETS:
         samples = data_by_dataset.get(ds_name, [])
@@ -356,19 +377,40 @@ def evaluate_redirection(data_by_dataset):
             print(f"  {ds_name}: no data")
             continue
 
-        stats = {"total": len(samples), "refusal": 0, "alternative": 0, "both": 0}
-        print(f"\n  [{ds_name}] evaluating... ({len(samples)} samples)")
+        # Reuse finished rows. Rows whose API call failed are evaluated again.
+        finished = {
+            (r["index"], r["prompt"]): r
+            for r in results.get(ds_name, {}).get("evaluated", [])
+            if r["refusal"] != "Error"
+        }
+        print(f"\n  [{ds_name}] evaluating... ({len(samples)} samples, {len(finished)} already finished)")
 
+        rows = []
+        newly_evaluated = 0
         for sample in tqdm(samples, desc=f"Redirection/{ds_name}"):
-            evaluation = evaluate_refusal_alternative(sample["prompt"], sample["response"])
-            if evaluation["refusal"] == "Yes":
-                stats["refusal"] += 1
-            if evaluation["alternative"] == "Yes":
-                stats["alternative"] += 1
-            if evaluation["refusal"] == "Yes" and evaluation["alternative"] == "Yes":
-                stats["both"] += 1
+            key = (sample["index"], sample["prompt"])
+            if key in finished:
+                rows.append(finished[key])
+                continue
 
-        results[ds_name] = stats
+            evaluation = evaluate_refusal_alternative(sample["prompt"], sample["response"])
+            rows.append({
+                "index": sample["index"],
+                "prompt": sample["prompt"],
+                "refusal": evaluation["refusal"],
+                "alternative": evaluation["alternative"],
+            })
+            newly_evaluated += 1
+
+            if newly_evaluated % 50 == 0:
+                # Keep the rows that were not reached yet in the checkpoint.
+                reached = {(r["index"], r["prompt"]) for r in rows}
+                pending = [r for key, r in finished.items() if key not in reached]
+                results[ds_name] = summarize_redirection(rows + pending)
+                save_redirection(results, output_path)
+
+        results[ds_name] = summarize_redirection(rows)
+        save_redirection(results, output_path)
 
     print(f"\n{'='*80}")
     print(f"Redirection Results (Naive)")
@@ -393,9 +435,6 @@ def evaluate_redirection(data_by_dataset):
         print(f"  {'-'*65}")
         print(f"  {'Overall':>20s} | {total_n:5d} | {total_ref/total_n*100:9.1f}% | {total_alt/total_n*100:11.1f}% | {total_both/total_n*100:9.1f}%")
 
-    output_path = os.path.join(OUTPUT_DIR, "naive_redirection_results.json")
-    with open(output_path, "w") as f:
-        json.dump({"NAIVE": results}, f, indent=2, ensure_ascii=False)
     print(f"\n  Saved: {output_path}")
 
     return results
