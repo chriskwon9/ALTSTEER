@@ -1,7 +1,7 @@
 <div align="center">
 <h1> ALTSTEER: Selective Safety Steering for Moving Beyond Hard Refusals to Constructive Alternatives </h1>
 
-Hoejoon Kwon, Byeonggeuk Lim, Kahyeon Kim, YoungBin Kim
+### Hoejoon Kwon, Byeonggeuk Lim, Kahyeon Kim, YoungBin Kim
 
 [![EMNLP 2026](https://img.shields.io/badge/EMNLP-2026-green.svg)](https://aclanthology.org/2026.emnlp-main.839/)
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
@@ -11,7 +11,8 @@ Hoejoon Kwon, Byeonggeuk Lim, Kahyeon Kim, YoungBin Kim
 
 </div>
 
----
+
+## ⚙️ About ALTSTEER
 
 ALTSTEER is an inference-time safety steering method. It shifts responses to harmful requests from short refusals toward constructive safe alternatives, within a single inference pass and without training.
 
@@ -160,6 +161,8 @@ The vectors are built from 2,668 rows (2,116 unique prompts) sampled from the un
 Our BeaverTails test sample is identified by its row numbers in `data/beavertails_test_indices.json`.
 
 ## 📚 Citation
+
+If you find this repo or the paper useful, please kindly cite:
 
 ```bibtex
 @inproceedings{kwon-etal-2026-altsteer,
