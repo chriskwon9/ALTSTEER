@@ -13,6 +13,8 @@
 
 ---
 
+## ⚙️ About ALTSTEER
+
 ALTSTEER is an inference-time safety steering method. It shifts responses to harmful requests from short refusals toward constructive safe alternatives, within a single inference pass and without training.
 
 It first measures refusal alignment: the cosine similarity between the prompt's last-token hidden states and the refusal vector, averaged over all layers. If the average is above 0, it applies staged steering during decoding, which shifts generation from refusal-oriented control toward constructive alternatives:
